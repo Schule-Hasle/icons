@@ -1,4 +1,4 @@
-# Application Icons for Microsoft Intune
+# Applikationssymbole für Microsoft Intune
 
 A set of application icons for Windows, macOS, Android and iOS platforms for use when adding applications to Microsoft Intune or Microsoft Endpoint Configuration Manager (or other device management / MDM and application deployment solutions).
 
@@ -26,9 +26,4 @@ Below is an example of the Intune Company Portal showing Microsoft Store and Win
 
 ## License
 
-[![License][license-badge]][license]
-
-This repository is licensed with an MIT license; however, the icons themselves remain the property of their respective software vendors.
-
-[license-badge]: https://img.shields.io/github/license/aaronparker/icons.svg?style=flat-square
-[license]: https://github.com/aaronparker/icons/blob/main/LICENSE
+This repository is based on the work of [aaronparker]<https://github.com/aaronparker>) in the repository [icons](https://github.com/aaronparker/icons) and licensed with an MIT license; however, the icons themselves remain the property of their respective software vendors.
