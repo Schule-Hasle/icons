@@ -26,4 +26,4 @@ Below is an example of the Intune Company Portal showing Microsoft Store and Win
 
 ## License
 
-This repository is based on the work of [aaronparker]<https://github.com/aaronparker>) in the repository [icons](https://github.com/aaronparker/icons) and licensed with an MIT license; however, the icons themselves remain the property of their respective software vendors.
+This repository is based on the work of [aaronparker](https://github.com/aaronparker) in his repository [icons](https://github.com/aaronparker/icons) and licensed with an MIT license; however, the icons themselves remain the property of their respective software vendors.
