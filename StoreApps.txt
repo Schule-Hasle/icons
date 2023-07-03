@@ -39,3 +39,19 @@ WhatsApp
 Dolby Access
 Intel® Graphics Command Center
 WireGuardPro
+Audacity
+Fast Barcode
+Blender
+EV3 Classroom LEGO® Education
+GIMP
+KeePassXC
+Minecraft Education
+Mozilla Firefox
+MuseScore 3
+Music Maker Jam
+OneNote
+Scratch 3
+SketchUp for Schools
+TreeSize Free
+Sway
+VLC
