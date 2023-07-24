@@ -2,8 +2,8 @@
     .SYNOPSIS
         Optimise icons
 #>
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 [CmdletBinding()]
 param(
     [System.String] $Path
@@ -66,32 +66,42 @@ function Invoke-Process {
                 if ($cmdOutput) {
                     throw $cmdOutput.Trim()
                 }
-            }
-            else {
+            } else {
                 if ([string]::IsNullOrEmpty($cmdOutput) -eq $false) {
                     Write-Output -InputObject $cmdOutput
                 }
             }
         }
-    }
-    catch {
+    } catch {
         $PSCmdlet.ThrowTerminatingError($_)
-    }
-    finally {
+    } finally {
         Remove-Item -Path $stdOutTempFile, $stdErrTempFile -Force -ErrorAction Ignore
     }
 }
 #endregion
 
+#region Set Operating Specific Settings
+if ([System.Environment]::OSVersion.Platform -eq 'Win32NT') {
+    $pngoutBinary = 'pngout.exe'
+    $pngoutParams = @('/y', '/q'. '/force')
+} elseif ($IsLinux) {
+    $pngoutBinary = 'pngoutl'
+    $pngoutArgs = @('-y', '-q'. '-force')
+} elseif ($IsMacOS) {
+    $pngoutBinary = 'pngoutm'
+    $pngoutArgs = @('-y', '-q'. '-force')
+}
+#endregion
+
 #region Optimise images in icons
 # Read in the existing hashes file
-$ImageHashes = [System.IO.Path]::Combine($Path, "bin", "IconHashes.json")
+$ImageHashes = [System.IO.Path]::Combine($Path, 'bin', 'IconHashes.json')
 if (Test-Path -Path $imageHashes) {
-    $pngHashes = Get-Content -Path $ImageHashes | ConvertFrom-Json -ErrorAction "Stop"
+    $pngHashes = Get-Content -Path $ImageHashes | ConvertFrom-Json -ErrorAction 'Stop'
 }
 
 # Get all images in the icons folder
-$Images = Get-ChildItem -Path "$Path\icons" -Recurse -Include "*.png"
+$Images = Get-ChildItem -Path "$Path\icons" -Recurse -Include '*.png'
 $cleanUp = @()
 
 # Optimise each file if the hash does not match
@@ -101,26 +111,22 @@ foreach ($image in $Images) {
     if ($pngHashes.($image.Name) -ne $hash.Hash) {
         Write-Host "Optimising: $($image.Name)"
 
-        $params = @{
-            FilePath     = $([System.IO.Path]::Combine($Path, "bin", "pngout.exe"))
-            ArgumentList = "$($image.FullName) /y /q /force"
-        }
-        $result = Invoke-Process @params
+        $filePath = $([System.IO.Path]::Combine($Path, 'bin', $pngoutBinary))
+        $result = & $filePath $($image.FullName) $pngOutArgs
 
-        if ($result -like "*Out:*") {
+        if ($result -like '*Out:*') {
             $result
-            if ([System.IO.Path]::GetExtension($image.Name) -notmatch ".png" ) {
+            if ([System.IO.Path]::GetExtension($image.Name) -notmatch '.png' ) {
                 $cleanUp += $image.FullName
             }
         }
-    }
-    else {
+    } else {
         Write-Host "Hash matches. Skip optimisation: $($image.Name)"
     }
 }
 
 # Read the hashes from all PNG files and output to file for next run
-$PngImages = Get-ChildItem -Path "$Path\icons" -Recurse -Include "*.png"
+$PngImages = Get-ChildItem -Path "$Path\icons" -Recurse -Include '*.png'
 $PngHashes = @{}
 foreach ($png in $PngImages) {
     $hash = Get-FileHash -Path $png.FullName
@@ -133,13 +139,13 @@ $PngHashes | ConvertTo-Json | Out-File -FilePath $ImageHashes -Force
 
 #region Optimise images in companyportal
 # Read in the existing hashes file
-$ImageHashes = [System.IO.Path]::Combine($Path, "bin", "CompanyPortalHashes.json")
+$ImageHashes = [System.IO.Path]::Combine($Path, 'bin', 'CompanyPortalHashes.json')
 if (Test-Path -Path $imageHashes) {
-    $pngHashes = Get-Content -Path $ImageHashes | ConvertFrom-Json -ErrorAction "Stop"
+    $pngHashes = Get-Content -Path $ImageHashes | ConvertFrom-Json -ErrorAction 'Stop'
 }
 
 # Get all images in the companyportal folder
-$Images = Get-ChildItem -Path "$Path\companyportal" -Recurse -Include "*.png"
+$Images = Get-ChildItem -Path "$Path\companyportal" -Recurse -Include '*.png'
 $cleanUp = @()
 
 # Optimise each file if the hash does not match
@@ -149,26 +155,22 @@ foreach ($image in $Images) {
     if ($pngHashes.($image.Name) -ne $hash.Hash) {
         Write-Host "Optimising: $($image.Name)"
 
-        $params = @{
-            FilePath     = $([System.IO.Path]::Combine($Path, "bin", "pngout.exe"))
-            ArgumentList = "$($image.FullName) /y /q /force"
-        }
-        $result = Invoke-Process @params
+        $filePath = $([System.IO.Path]::Combine($Path, 'bin', $pngoutBinary))
+        $result = & $filePath $($image.FullName) $pngOutArgs
 
-        if ($result -like "*Out:*") {
+        if ($result -like '*Out:*') {
             $result
-            if ([System.IO.Path]::GetExtension($image.Name) -notmatch ".png" ) {
+            if ([System.IO.Path]::GetExtension($image.Name) -notmatch '.png' ) {
                 $cleanUp += $image.FullName
             }
         }
-    }
-    else {
+    } else {
         Write-Host "Hash matches. Skip optimisation: $($image.Name)"
     }
 }
 
 # Read the hashes from all PNG files and output to file for next run
-$PngImages = Get-ChildItem -Path "$Path\companyportal" -Recurse -Include "*.png"
+$PngImages = Get-ChildItem -Path "$Path\companyportal" -Recurse -Include '*.png'
 $PngHashes = @{}
 foreach ($png in $PngImages) {
     $hash = Get-FileHash -Path $png.FullName
