@@ -55,3 +55,4 @@ SketchUp for Schools
 TreeSize Free
 Sway
 VLC
+Quick Assist
